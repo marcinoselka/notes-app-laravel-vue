@@ -49,6 +49,20 @@
                     </tr>
                 </tbody>
             </table>
+
+            <nav v-if="!isLoading && lastPage > 1" aria-label="Paginacja notatek">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                        <button class="page-link" @click="goToPage(currentPage - 1)">&laquo; Poprzednia</button>
+                    </li>
+                    <li v-for="p in lastPage" :key="p" class="page-item" :class="{ active: p === currentPage }">
+                        <button class="page-link" @click="goToPage(p)">{{ p }}</button>
+                    </li>
+                    <li class="page-item" :class="{ disabled: currentPage === lastPage }">
+                        <button class="page-link" @click="goToPage(currentPage + 1)">Następna &raquo;</button>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </template>
@@ -69,6 +83,9 @@ export default {
             editNote: null,
             count: 0,
             countPinned: 0,
+            currentPage: 1,
+            lastPage: 1,
+            perPage: 15,
             pollTimer: null,
         };
     },
@@ -90,17 +107,21 @@ export default {
                 return this.note_list;
             }
 
+            // Filtrowanie działa tylko na aktualnie wczytanej stronie —
+            // bez dodatkowego zapytania do API (zgodnie z wymaganiem).
             return this.note_list.filter((note) => note.title.toLowerCase().includes(term));
         },
     },
     methods: {
-        getNewList() {
+        getNewList(page = this.currentPage) {
             return axios
-                .get('/api/notes', { params: { per_page: 100 } })
+                .get('/api/notes', { params: { page, per_page: this.perPage } })
                 .then(({ data }) => {
                     this.note_list = data.data;
                     this.count = data.meta?.total ?? this.note_list.length;
                     this.countPinned = this.note_list.filter((n) => n.is_pinned).length;
+                    this.currentPage = data.meta?.current_page ?? 1;
+                    this.lastPage = data.meta?.last_page ?? 1;
                 })
                 .catch((error) => {
                     console.error('Nie udało się pobrać notatek:', error);
@@ -108,6 +129,14 @@ export default {
                 .finally(() => {
                     this.isLoading = false;
                 });
+        },
+        goToPage(page) {
+            if (page < 1 || page > this.lastPage || page === this.currentPage) {
+                return;
+            }
+
+            this.isLoading = true;
+            this.getNewList(page);
         },
         togglePin(item) {
             const previous = item.is_pinned;
@@ -127,7 +156,14 @@ export default {
 
             axios
                 .delete(`/api/notes/${id}`)
-                .then(() => this.getNewList())
+                .then(() => {
+                    const isLastItemOnPage = this.note_list.length === 1;
+                    const targetPage = isLastItemOnPage && this.currentPage > 1
+                        ? this.currentPage - 1
+                        : this.currentPage;
+
+                    this.getNewList(targetPage);
+                })
                 .catch((error) => console.error('Nie udało się usunąć notatki:', error));
         },
         openForm(note) {
@@ -139,8 +175,9 @@ export default {
             this.editNote = null;
         },
         onSaved() {
+            const wasCreating = this.editNote === null;
             this.closeForm();
-            this.getNewList();
+            this.getNewList(wasCreating ? 1 : this.currentPage);
         },
     },
 };
