@@ -21,10 +21,8 @@ class NoteController extends Controller
      */
     public function index(Request $request): NoteResourceCollection
     {
-        $perPage = (int) $request->integer('per_page', 15);
-
         return new NoteResourceCollection(
-            $this->notes->list($request->user(), $perPage)
+            $this->notes->list($request->user())
         );
     }
 

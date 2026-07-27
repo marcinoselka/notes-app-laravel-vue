@@ -15,9 +15,9 @@ class NoteService
 
     public function __construct(private readonly NoteRepositoryInterface $notes) {}
 
-    public function list(User $user, int $perPage = 15): LengthAwarePaginator
+    public function list(User $user): LengthAwarePaginator
     {
-        return $this->notes->all($user, $perPage);
+        return $this->notes->all($user);
     }
 
     public function find(int $id, User $user): Note

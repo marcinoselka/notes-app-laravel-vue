@@ -8,13 +8,16 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EloquentNoteRepository implements NoteRepositoryInterface
 {
-    public function all(User $user, int $perPage = 15): LengthAwarePaginator
+    /**
+     * Notes are paginated with 15 per page by default (Zadanie 1).
+     */
+    public function all(User $user): LengthAwarePaginator
     {
         return Note::query()
             ->where('user_id', $user->id)
             ->orderByDesc('is_pinned')
             ->orderByDesc('created_at')
-            ->paginate($perPage);
+            ->paginate(15);
     }
 
     public function find(int $id, User $user): Note

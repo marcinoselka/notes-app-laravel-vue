@@ -87,7 +87,6 @@ export default {
             countPinned: 0,
             currentPage: 1,
             lastPage: 1,
-            perPage: 15,
             pollTimer: null,
         };
     },
@@ -117,7 +116,7 @@ export default {
     methods: {
         getNewList(page = this.currentPage) {
             return axios
-                .get('/api/notes', { params: { page, per_page: this.perPage } })
+                .get('/api/notes', { params: { page } })
                 .then(({ data }) => {
                     this.note_list = data.data;
                     this.count = data.meta?.total ?? this.note_list.length;

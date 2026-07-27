@@ -8,7 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface NoteRepositoryInterface
 {
-    public function all(User $user, int $perPage = 15): LengthAwarePaginator;
+    public function all(User $user): LengthAwarePaginator;
 
     public function find(int $id, User $user): Note;
 
