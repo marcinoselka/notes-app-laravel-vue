@@ -1,0 +1,10 @@
+{
+    "name": "task-queue",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "description": "Zadanie 3: moduł kolejki asynchronicznej z priorytetami (czysty JS, bez frameworków).",
+    "scripts": {
+        "examples": "node examples.js"
+    }
+}
