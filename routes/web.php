@@ -3,9 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/notes');
 
 Route::view('/notes', 'notes')->name('notes');
 

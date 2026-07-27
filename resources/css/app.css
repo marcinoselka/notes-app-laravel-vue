@@ -1,9 +1,33 @@
-@import 'tailwindcss';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
 
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
+.skeleton-line {
+    height: 1rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(90deg, #e9ecef 25%, #f1f3f5 37%, #e9ecef 63%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.4s ease infinite;
+}
 
-@theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+@keyframes skeleton-loading {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.notification-panel {
+    position: absolute;
+    right: 0;
+    top: 2.2rem;
+    width: 340px;
+    max-height: 420px;
+    overflow-y: auto;
+    z-index: 1050;
+}
+
+.notification-item.unread {
+    background-color: #f0f7ff;
 }
