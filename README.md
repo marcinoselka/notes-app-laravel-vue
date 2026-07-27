@@ -109,12 +109,22 @@ zadania 4 i 5a jawnie odwołuje się do klas Bootstrapa (`card`, `btn`,
 `bi-bell` itd.), więc scaffold Tailwind/Vite z `laravel/laravel` został
 zdjęty na rzecz `bootstrap` + `bootstrap-icons` (paczki npm, bez CDN).
 
-**Lista notatek w widgecie pobiera `per_page=100`** zamiast paginować
-UI stronicowaniem — endpoint API nadal domyślnie paginuje po 15 (wymóg
-Zadania 1, pokryty testem), ale w widgecie filtrowanie po tytule ma
-działać na całej liście po stronie klienta (wymóg Zadania 4), więc widget
-świadomie pobiera większą stronę zamiast implementować dodatkowo
-stronicowanie w UI, którego zadanie nie wymagało.
+**Widget ma realną paginację (Prev/Next + numery stron)**, jeden do
+jednego z paginacją API z Zadania 1 (15 na stronę) — `NoteManager.vue`
+pobiera po jednej stronie na raz i renderuje kontrolki Bootstrapa
+(`pagination`). Filtrowanie po tytule (computed property, bez
+dodatkowego zapytania do API — wymóg Zadania 4) działa w obrębie
+aktualnie wczytanej strony, nie całej kolekcji notatek.
+
+**`config/sanctum.php` dodaje `Sanctum::currentRequestHost()` do listy
+stateful domains.** Domyślna konfiguracja Sanctum na sztywno rozpoznaje
+tylko `127.0.0.1:8000` jako "swój" frontend — każdy inny port lokalny
+(np. `php artisan serve --port=8975`) powodował, że sesja logowania
+działała (bo `routes/web.php` zawsze ma `StartSession`), ale
+`/api/notes` i `/api/notifications` zwracały 401, bo Sanctum nie
+rozpoznawał żądania jako pochodzącego z zaufanego frontendu. Ten wpis
+ufa aktualnemu hostowi żądania na dowolnym porcie — właściwe rozwiązanie
+do lokalnego developmentu z niestandardowym portem.
 
 ## Weryfikacja
 
