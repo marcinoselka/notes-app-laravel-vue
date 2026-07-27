@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Note;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        $testUser = User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+            'password' => bcrypt('password'),
         ]);
+
+        Note::factory(3)->pinned()->for($testUser)->create();
+        Note::factory(12)->for($testUser)->create();
+
+        Notification::factory(3)->for($testUser)->create();
+        Notification::factory(2)->read()->for($testUser)->create();
+
+        $otherUsers = User::factory(3)->create();
+        $otherUsers->each(function (User $user) {
+            Note::factory(5)->for($user)->create();
+        });
     }
 }
