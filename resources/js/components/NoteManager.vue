@@ -19,36 +19,38 @@
                 Brak notatek do wyświetlenia.
             </div>
 
-            <table v-else class="table align-middle">
-                <thead>
-                    <tr>
-                        <th>Tytuł</th>
-                        <th>Treść</th>
-                        <th class="text-center">Przypięta</th>
-                        <th class="text-end">Akcje</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="item in filteredList" :key="item.id">
-                        <td>{{ item.title }}</td>
-                        <td class="text-truncate" style="max-width: 300px">{{ item.content }}</td>
-                        <td class="text-center">
-                            <button
-                                class="btn btn-sm"
-                                :class="item.is_pinned ? 'btn-warning' : 'btn-outline-secondary'"
-                                title="Przełącz przypięcie"
-                                @click="togglePin(item)"
-                            >
-                                <i :class="item.is_pinned ? 'bi bi-pin-fill' : 'bi bi-pin'"></i>
-                            </button>
-                        </td>
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-outline-primary me-1" @click="openForm(item)">Edytuj</button>
-                            <button class="btn btn-sm btn-outline-danger" @click="deleteNote(item.id)">Usuń</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div v-else class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Tytuł</th>
+                            <th>Treść</th>
+                            <th class="text-center text-nowrap">Przypięta</th>
+                            <th class="text-end text-nowrap">Akcje</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="item in filteredList" :key="item.id">
+                            <td>{{ item.title }}</td>
+                            <td class="text-truncate" style="max-width: 300px">{{ item.content }}</td>
+                            <td class="text-center text-nowrap">
+                                <button
+                                    class="btn btn-sm"
+                                    :class="item.is_pinned ? 'btn-warning' : 'btn-outline-secondary'"
+                                    title="Przełącz przypięcie"
+                                    @click="togglePin(item)"
+                                >
+                                    <i :class="item.is_pinned ? 'bi bi-pin-fill' : 'bi bi-pin'"></i>
+                                </button>
+                            </td>
+                            <td class="text-end text-nowrap">
+                                <button class="btn btn-sm btn-outline-primary me-1" @click="openForm(item)">Edytuj</button>
+                                <button class="btn btn-sm btn-outline-danger" @click="deleteNote(item.id)">Usuń</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <nav v-if="!isLoading && lastPage > 1" aria-label="Paginacja notatek">
                 <ul class="pagination justify-content-center mb-0">
