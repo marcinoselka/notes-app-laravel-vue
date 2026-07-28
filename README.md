@@ -22,6 +22,17 @@ Wymaga zainstalowanego PHP 8.3+, Composer i Node.js (npm) w systemie —
 `composer run setup` sam zajmuje się resztą (patrz definicja `scripts.setup`
 w `composer.json`).
 
+Jeśli port 8000 jest zajęty (częsty przypadek), podaj inny przez `--port`,
+np.:
+
+```bash
+php artisan serve --port=8642
+```
+
+Działa na dowolnym porcie bez dodatkowej konfiguracji — `config/sanctum.php`
+ufa hostowi bieżącego żądania (`Sanctum::currentRequestHost()`), więc
+logowanie i sesja Sanctum SPA działają niezależnie od wybranego portu.
+
 ## Szybki start (krok po kroku, ręcznie)
 
 ```bash
@@ -33,10 +44,12 @@ php artisan key:generate
 php artisan migrate --seed   # Laravel 13 sam tworzy plik database/database.sqlite
 
 npm run build           # lub: npm run dev (w osobnym terminalu, dla HMR)
-php artisan serve
+php artisan serve                 # domyślnie port 8000
+php artisan serve --port=8642     # albo dowolny inny port, jeśli 8000 jest zajęty
 ```
 
-Aplikacja: http://127.0.0.1:8000/ (przekierowuje na `/notes`).
+Aplikacja: http://127.0.0.1:8000/ (lub wybrany port, np. http://127.0.0.1:8642/) —
+przekierowuje na `/notes`.
 Konto testowe utworzone przez seeder: **test@example.com / password**.
 
 Uruchomienie testów:
