@@ -6,7 +6,23 @@ Zadania 1–4 (obowiązkowe) oraz 5a/5b (bonus) — wszystkie zaimplementowane.
 Stack: Laravel 13 (PHP 8.3), Sanctum (SPA/cookie auth), Vue 3, Bootstrap 5,
 Vite, SQLite (dev), PHPUnit.
 
-## Szybki start
+## TL;DR — uruchomienie jedną komendą
+
+Baza SQLite (`database/database.sqlite`) celowo **nie jest** w repozytorium
+(to plik binarny/wygenerowany, nie kod źródłowy — standard dla Laravela).
+Po `git clone` trzeba ją odtworzyć z migracji + seedera. Najszybciej:
+
+```bash
+composer run setup   # instaluje zależności PHP+JS, tworzy .env, klucz aplikacji,
+                      # zakłada bazę SQLite, migruje, seeduje, buduje frontend
+php artisan serve
+```
+
+Wymaga zainstalowanego PHP 8.3+, Composer i Node.js (npm) w systemie —
+`composer run setup` sam zajmuje się resztą (patrz definicja `scripts.setup`
+w `composer.json`).
+
+## Szybki start (krok po kroku, ręcznie)
 
 ```bash
 composer install
@@ -14,8 +30,7 @@ npm install
 
 cp .env.example .env   # jeśli .env nie istnieje
 php artisan key:generate
-touch database/database.sqlite
-php artisan migrate --seed
+php artisan migrate --seed   # Laravel 13 sam tworzy plik database/database.sqlite
 
 npm run build           # lub: npm run dev (w osobnym terminalu, dla HMR)
 php artisan serve
