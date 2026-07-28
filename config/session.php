@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
-
 return [
 
     /*
@@ -127,9 +125,13 @@ return [
     |
     */
 
+    // Derived from APP_KEY (unique per `php artisan key:generate`) rather than
+    // a static name, so two installs of this same project running locally on
+    // different ports never collide over the session cookie — browsers scope
+    // cookies by host only, never by port.
     'cookie' => env(
         'SESSION_COOKIE',
-        Str::slug((string) env('APP_NAME', 'laravel')).'-session'
+        'notes_app_session_'.substr(hash('sha256', (string) env('APP_KEY')), 0, 12)
     ),
 
     /*
