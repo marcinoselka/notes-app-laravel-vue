@@ -132,6 +132,20 @@ odpowiada natychmiast po zapisaniu notatki, a wysyłka maila (wraz z
 automatycznymi retry przy błędzie) dzieje się w tle, obsługiwana przez
 `php artisan queue:work`.
 
+**`SESSION_DRIVER=file`, nie `database`.** Domyślny szkielet Laravela 13
+ustawia `SESSION_DRIVER=database`, co przy SQLite oznacza zapis do pliku
+bazy przy **każdym** żądaniu (sesja jest dotykana na każdym requeście, w
+tym co 60 s przy pollingu powiadomień i co 3 min przy pollingu notatek).
+SQLite pozwala tylko na jednego pisarza naraz — przy współbieżnym dostępie
+(np. równocześnie działający `php artisan queue:work` piszący do tabeli
+`jobs`) potrafi to dawać sporadyczne błędy `database is locked`, które po
+cichu gubią zapis sesji i objawiają się jako niespodziewane wylogowanie
+(„działało, a potem nagle ekran logowania po odświeżeniu”). Sesje po
+plikach (`storage/framework/sessions`) nie mają tego problemu — kolejka
+zadań (`QUEUE_CONNECTION=database`, wymagana przez Zadanie 5b) zostaje
+bez zmian, bo tabela `jobs` jest odpytywana/zapisywana dużo rzadziej niż
+sesja i nie koliduje z tym samym plikiem na każdym requeście.
+
 **Bootstrap zamiast domyślnego Tailwinda ze szkieletu Laravela** — treść
 zadania 4 i 5a jawnie odwołuje się do klas Bootstrapa (`card`, `btn`,
 `bi-bell` itd.), więc scaffold Tailwind/Vite z `laravel/laravel` został
